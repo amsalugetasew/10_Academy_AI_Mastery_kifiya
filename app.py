@@ -15,26 +15,41 @@ slider = st.sidebar.slider("Filter Value", 0, 100, 50)
 try:
     data = load_data(source)
     processed_data = summary_stats(data)
+    st.header("Statistical Summary")
+    st.dataframe(processed_data) 
     
     # Display raw data and visualizations
     st.header("Raw Data")
-    st.dataframe(data)
-    
-    # Plot correlation heatmap and boxplot
-    correlation_heatmap(data)
-    plot_boxplot(data, data.columns[0])  # Adjust the column as needed
+    st.dataframe(data.head())
 
-    # Filter the data based on slider value
-    st.header("Filtered Data")
-    filtered_data = filter_data(data, data.columns)
-    st.dataframe(filtered_data)
-    
-    # Display histogram for filtered data
-    st.header("Visualizations")
-    fig, ax = plt.subplots()
-    filtered_data["processed_column"] = pd.to_numeric(filtered_data["processed_column"], errors="coerce")
-    filtered_data["processed_column"].plot(kind="hist", ax=ax)
-    st.pyplot(fig)
     
 except Exception as e:
     st.error(f"Error loading data: {e}")
+# Plot correlation heatmap and boxplot
+    st.header("Correlation Matrix")
+
+try:
+    corr_matrix, heatmap_plot = correlation_heatmap(data)
+    
+    # Display the correlation heatmap using Matplotlib
+    st.pyplot(heatmap_plot)
+    
+    # Display the raw correlation matrix as a table
+    st.write("Correlation Matrix Table:")
+    st.dataframe(corr_matrix)
+    
+except Exception as e:
+    st.error(f"Error displaying correlation matrix: {e}")
+
+st.header("Boxplot Visualization")
+
+try:
+    # Select a column for the boxplot
+    selected_column = st.selectbox("Select a column for the boxplot", data.columns)
+    
+    # Generate and display the boxplot
+    boxplot_fig = plot_boxplot(data, selected_column)
+    st.plotly_chart(boxplot_fig)
+    
+except Exception as e:
+    st.error(f"Error displaying boxplot: {e}")
