@@ -4,14 +4,14 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import plotly.express as px
 
-# Load data
-def load_data(source: str):
-    if source == "local":
-        df = pd.read_csv("data/benin-malanville.csv")
+# Load data dynamically based on user upload 
+def load_data(uploaded_file):
+    if uploaded_file is not None:
+        df = pd.read_csv(uploaded_file)  # Load the uploaded CSV file
         df["Timestamp"] = pd.to_datetime(df["Timestamp"])  # Ensure Timestamp is in datetime format
         return df
     else:
-        raise ValueError("Invalid data source")
+        raise ValueError("No file uploaded. Please upload a CSV file.")
 # Generate summary statistics
 def summary_stats(df):
     return df.describe()
