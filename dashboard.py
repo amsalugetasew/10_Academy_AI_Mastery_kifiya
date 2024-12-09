@@ -12,7 +12,6 @@ def load_data(source: str):
         return df
     else:
         raise ValueError("Invalid data source")
-
 # Generate summary statistics
 def summary_stats(df):
     return df.describe()
@@ -22,12 +21,6 @@ def filter_data(df, threshold):
     df["processed_column"] = pd.to_numeric(df["GHI"] * 0.1 , errors="coerce")  # Convert to numeric
     return df[df["processed_column"] < threshold]
 
-# Plot correlation heatmap
-# def correlation_heatmap(df):
-#     plt.figure(figsize=(10, 8))
-#     sns.heatmap(df.corr(), annot=True, cmap="coolwarm")
-#     plt.title("Correlation Heatmap")
-#     return plt
 def correlation_heatmap(df):
     corr_matrix = df.corr()  # Compute the correlation matrix
     plt.figure(figsize=(10, 8))

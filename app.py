@@ -1,45 +1,67 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-from dashboard import load_data, summary_stats, correlation_heatmap, plot_boxplot, filter_data
+from io import StringIO
+from dashboard import load_data, summary_stats, correlation_heatmap, plot_boxplot
 
 # App title and description
 st.title("Interactive Data Insights Dashboard")
-st.markdown("Explore and visualize data insights dynamically.")
+st.markdown("<p style='color:gray;'>Explore and visualize data insights dynamically.</p>", unsafe_allow_html=True)
 
 # Sidebar for options
+st.sidebar.header("My Week 0 Tenx Streamlit Dynamic Visualization Dashboard")
 source = st.sidebar.selectbox("Data Source", ["local"])
-slider = st.sidebar.slider("Filter Value", 0, 100, 50)
+# slider = st.sidebar.slider("Filter Value", 0, 100, 50)
 
 # Load and process data
 try:
     data = load_data(source)
-    processed_data = summary_stats(data)
-    st.header("Statistical Summary")
-    st.dataframe(processed_data) 
-    
-    # Display raw data and visualizations
-    st.header("Raw Data")
-    st.dataframe(data.head())
+    # Dropdown for views
+    view_option = st.selectbox(
+        "Select View",
+        ["Select Option","Data Overview","Statistical Summary", "Top N Rows", "Correlation Matrix", "Correlation Map"],
+    )
+    # Display selected view
+    if view_option == "Data Overview":
+        st.header("DataFrame Info")
+        # Extract details from df.info()
+        df_info = pd.DataFrame({
+            "Column": data.columns,
+            "Non-Null Count": [data[col].notnull().sum() for col in data.columns],
+            "Dtype": [data[col].dtype for col in data.columns]
+        })
+        st.dataframe(df_info)
+    if view_option == "Select Option":
+        st.header("Please select an option you want to see")
+    if view_option == "Statistical Summary":
+        processed_data = summary_stats(data)
+        st.header("Statistical Summary")
+        st.dataframe(processed_data)
 
-    
+    elif view_option == "Top N Rows":
+        st.header("Top N Rows")
+        # Slider to dynamically select the number of rows to display
+        num_rows = st.slider("Select number of rows to display", min_value=1, max_value=len(data), value=5)
+        st.dataframe(data.head(num_rows))
+
+    elif view_option == "Correlation Matrix":
+        try:
+            corr_matrix, _ = correlation_heatmap(data, return_plot=False)
+            st.header("Correlation Matrix Table")
+            st.dataframe(corr_matrix)
+        except Exception as e:
+            st.error(f"Error displaying correlation matrix: {e}")
+
+    elif view_option == "Correlation Map":
+        try:
+            _, heatmap_plot = correlation_heatmap(data)
+            st.header("Correlation Heatmap")
+            st.pyplot(heatmap_plot)
+        except Exception as e:
+            st.error(f"Error displaying correlation heatmap: {e}")
+
 except Exception as e:
     st.error(f"Error loading data: {e}")
-# Plot correlation heatmap and boxplot
-    st.header("Correlation Matrix")
-
-try:
-    corr_matrix, heatmap_plot = correlation_heatmap(data)
-    
-    # Display the correlation heatmap using Matplotlib
-    st.pyplot(heatmap_plot)
-    
-    # Display the raw correlation matrix as a table
-    st.write("Correlation Matrix Table:")
-    st.dataframe(corr_matrix)
-    
-except Exception as e:
-    st.error(f"Error displaying correlation matrix: {e}")
 
 st.header("Boxplot Visualization")
 
