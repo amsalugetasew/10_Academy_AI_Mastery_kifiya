@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 from io import StringIO
-from dashboard import load_data, summary_stats, correlation_heatmap, plot_boxplot
+from dashboard import load_data, summary_stats, correlation_heatmap, plot_boxplot, plot_histogram
 
 # App title and description
 st.title("Interactive Data Insights Dashboard")
@@ -63,6 +63,23 @@ try:
 except Exception as e:
     st.error(f"Error loading data: {e}")
 
+
+
+# Header for histogram visualization
+st.header("Histogram Visualization")
+
+try:
+    # Select a column for the histogram
+    selected_hist_column = st.selectbox("Select a column for the histogram", data.columns, key="histogram_dropdown")
+    
+    # Generate and display the histogram
+    histogram_fig = plot_histogram(data, selected_hist_column)
+    st.plotly_chart(histogram_fig)
+    
+except Exception as e:
+    st.error(f"Error displaying histogram: {e}")
+
+# Header for boxplot visualization
 st.header("Boxplot Visualization")
 
 try:
