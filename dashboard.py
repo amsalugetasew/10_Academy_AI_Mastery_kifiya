@@ -36,3 +36,7 @@ def plot_boxplot(df, column):
 def plot_boxplot(df, column):
     fig = px.box(df, y=column, title=f"Boxplot of {column}")
     return fig
+# Function to plot histogram
+def plot_histogram(df, column):
+    fig = px.histogram(df, x=column, title=f"Histogram of {column}", nbins=30)
+    return fig
