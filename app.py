@@ -8,7 +8,7 @@ st.title("Interactive Data Insights Dashboard")
 st.markdown("Explore and visualize data insights dynamically.")
 
 # Sidebar for options
-source = st.sidebar.selectbox("Data Source", ["local", "api"])
+source = st.sidebar.selectbox("Data Source", ["local"])
 slider = st.sidebar.slider("Filter Value", 0, 100, 50)
 
 # Load and process data

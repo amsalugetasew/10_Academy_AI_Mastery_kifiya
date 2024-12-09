@@ -10,13 +10,6 @@ def load_data(source: str):
         df = pd.read_csv("data/benin-malanville.csv")
         df["Timestamp"] = pd.to_datetime(df["Timestamp"])  # Ensure Timestamp is in datetime format
         return df
-    elif source == "api":
-        url = "https://api.example.com/data"
-        response = requests.get(url)
-        data = response.json()
-        df = pd.DataFrame(data)
-        df["Timestamp"] = pd.to_datetime(df["Timestamp"])  # Ensure Timestamp is in datetime format
-        return df
     else:
         raise ValueError("Invalid data source")
 
